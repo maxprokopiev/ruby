@@ -2260,7 +2260,7 @@ process_options(int argc, char **argv, ruby_cmdline_options_t *opt)
     ruby_set_argv(argc, argv);
     opt->sflag = process_sflag(opt->sflag);
 
-    if (dump & (DUMP_BIT(prism_parsetree))) {
+    if ((dump & (DUMP_BIT(prism_parsetree))) || ((*rb_ruby_prism_ptr) && (dump & (DUMP_BIT(parsetree)|DUMP_BIT(parsetree_with_comment))))) {
         pm_parse_result_t result = { 0 };
         VALUE error;
 
@@ -2294,8 +2294,7 @@ process_options(int argc, char **argv, ruby_cmdline_options_t *opt)
             rb_exc_raise(error);
         }
 
-        dump &= ~DUMP_BIT(prism_parsetree);
-        if (!dump) return Qtrue;
+        return Qtrue;
     }
 
     if (!(*rb_ruby_prism_ptr()) && !(dump & (DUMP_BIT(prism_parsetree)))) {
